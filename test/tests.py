@@ -3,19 +3,9 @@
 
 import unittest, os
 from cStringIO import StringIO
-from logging import root, DEBUG
 import tnef
 
-root.setLevel(DEBUG)
-
 tmpdir = "tmptestdir"
-
-
-def getFiles(filename):
-   f = open(filename)
-   s = StringIO(f.read())
-   f.seek(0)
-   return f, s
 
 class TestTnefFunctions(unittest.TestCase):
     
@@ -26,20 +16,12 @@ class TestTnefFunctions(unittest.TestCase):
       os.rmdir(tmpdir)
 
    def testHasBody(self):
-      f, s = getFiles("body.tnef")
-      self.failUnless(tnef.hasBody(f))
-
-      self.failUnless(tnef.hasBody(s))
-      f, s = getFiles("multi-name-property.tnef")
-      self.failIf(tnef.hasBody(f))
-      self.failIf(tnef.hasBody(s))
+      self.failUnless(tnef.hasBody(open("body.tnef")))
+      self.failIf(tnef.hasBody(open("multi-name-property.tnef")))
 
    def testHasFiles(self):
-      f, s = getFiles("multi-name-property.tnef")
-      self.failIf(tnef.hasFiles(f))
-
-      self.failIf(tnef.hasFiles(s))
       self.failUnless(tnef.hasFiles(open("two-files.tnef")))
+      self.failIf(tnef.hasFiles(open("multi-name-property.tnef")))
       self.failIf(tnef.hasFiles(open("body.tnef")))
 
    def testHasContent(self):
@@ -84,30 +66,6 @@ class TestTnefFunctions(unittest.TestCase):
          os.remove(pth)
       self.assertEqual(correct, listing)
 
-   def testGetBody_TypeIsAvailable(self):
-      "when the desired body type is available"
-      f, s = getFiles("body.tnef")
-      retrieved = tnef.getBody(f, bodytype="html")
-      content = open("message.html").read()
-      self.assertEqual(content, retrieved)
-
-      #retrieved = tnef.getBody(s, bodytype="html")
-      #self.assertEqual(content, retrieved)
-
-   def testGetBody_TypeIsNotAvailable(self):
-      "when the desired body type is NOT available"
-      def raiser():
-         retrieved = tnef.getBody(open("body.tnef"), bodytype="rtf")
-      self.assertRaises(tnef.TNEFBodyNotFoundException, raiser)
-
-   def testGetBodyTypes_OneBodyNoFiles(self):
-      "get list of body types (html,rtf,text) in TNEF file"
-
-      self.assertEqual("html", tnef.getBodyTypes(open("body.tnef"))[0])
-      
-   def testGetBodyTypes_OneBodyManyFiles(self):
-      "get body type when there are many attached files"
-      self.assertEqual("rtf", tnef.getBodyTypes(open("data-before-name.tnef"))[0])
 
 if __name__=="__main__":   
    unittest.main()

@@ -29,13 +29,12 @@ if sys.version_info < (2, 3):
 doclines = __doc__.split("\n")
 
 setup(name="pytnef",
-      version="0.3",
+      version="0.2",
       maintainer="Petri Savolainen",
       maintainer_email="petri.savolainen@iki.fi",
       license = "http://www.fsf.org/licensing/licenses/lgpl.txt",
       platforms = ["unix"],
-      packages = ["tnef"],
-      package_dir = {"tnef": "lib"},
+      py_modules = ("tnef",),
       description = doclines[0],
       classifiers = filter(None, classifiers.split("\n")),
       long_description = "\n".join(doclines[2:]),

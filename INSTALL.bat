@@ -1,2 +1,2 @@
-C:\Python25\python.exe setup.py install
+C:\Python24\python.exe setup.py
 pause

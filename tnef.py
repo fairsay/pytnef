@@ -1,79 +1,28 @@
 #!/usr/local/bin/python2.4
 import os
 from subprocess import Popen, PIPE
-from copy import copy
-from logging import debug
-from StringIO import StringIO
 
-__all__ = (
-   "TNEFError", "hasBody", "hasFiles", "listFilesAndTypes", 
-   "extractAll", "hasContent", "getBody", "getBodyTypes", 
-   "TNEFBodyNotFoundException", "DEFAULTBODY"
-)
+
+__all__ = ("TNEFError", "hasBody", "hasFiles", "listFilesAndTypes", "extractAll", "hasContent")
 
 DEFAULTBODY = "tnfbdyname"
-TMPDIR = "tneftmpdir"
-TNEFBODYTYPES = ("html", "rtf", "txt")
 
 class TNEFError(Exception):
    "raised whenever something goes wrong invoking the command-line"
 
 
-class TNEFBodyNotFoundException(TNEFError):
-   "no body of the requested type"
-   
 def runTnef(sourcefile, args):
-   "feed cmdline an open fileobj & args"
+   "helper function"
    args = ("tnef",) + args
    TNEF = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
    out, err = TNEF.communicate(sourcefile.read())
-   sourcefile.close()   
+   
    if TNEF.returncode:
       raise TNEFError("Problem running tnef command: %s" % err)
 
    return out
    
 
-def getBodyTypes(sourcefile):
-   "get a list of body types found"
-   files = listFilesAndTypes(sourcefile, bodyname=DEFAULTBODY).keys()
-   types = []
-   for fn in files:
-      for tt in TNEFBODYTYPES:
-         if fn == '.'.join((DEFAULTBODY, tt)): 
-            types.append(tt)
-   return types
-   
-   
-def getBody(sourcefile, bodytype="html"):
-   "return body text or raise TNEFBodyNotFoundException if the file has no body of the type"
-
-   srccopy = StringIO(sourcefile.read())
-   sourcefile.seek(0)
-
-   files = listFilesAndTypes(srccopy, bodyname=DEFAULTBODY).keys()
-   filename = '.'.join((DEFAULTBODY, bodytype))
-
-   # desired body type is available
-
-   if  filename in files:
-      os.mkdir(TMPDIR)
-      extracted = extractAll(sourcefile, targetdir=TMPDIR, bodyname=DEFAULTBODY)
-      body = None
-      for extracted_file_path in extracted:
-         if filename in extracted_file_path:
-            bodyfp = open(extracted_file_path)
-            body = bodyfp.read()
-            bodyfp.close()
-            del bodyfp
-         os.remove(extracted_file_path)
-      os.rmdir(TMPDIR)
-      return body
-      
-   else:
-      raise TNEFBodyNotFoundException("no %s body found" % bodytype)
-  
-   
 def hasBody(sourcefile):
    "true if the TNEF file contains a content body"
    files = listFilesAndTypes(sourcefile, bodyname=DEFAULTBODY).keys()

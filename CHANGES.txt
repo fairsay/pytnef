@@ -1,6 +1,3 @@
-0.3
- - added ability to extract HTML from TNEF RTF email body (requires that pyparsing is installed)
- 
 0.2 
  - pkg now wraps "tnef" on linux; is actually useful
  - tests
