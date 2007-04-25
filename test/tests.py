@@ -20,10 +20,12 @@ def getFiles(filename):
 class TestTnefFunctions(unittest.TestCase):
     
    def setUp(self):
+      os.chdir("data")
       os.mkdir(tmpdir)
       
    def tearDown(self):
       os.rmdir(tmpdir)
+      os.chdir("..")
 
    def testHasBody(self):
       f, s = getFiles("body.tnef")
