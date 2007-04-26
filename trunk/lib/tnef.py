@@ -1,140 +1,150 @@
-#!/usr/local/bin/python2.4
-import os
-from subprocess import Popen, PIPE
+"""
+high-level access to tnef decoding
+"""
+from __future__ import with_statement
+import os, logging
 from copy import copy
-from logging import debug
 from StringIO import StringIO
 
-__all__ = (
-   "TNEFError", "hasBody", "hasFiles", "listFilesAndTypes", 
-   "extractAll", "hasContent", "getBody", "getBodyTypes", 
-   "TNEFBodyNotFoundException", "DEFAULTBODY"
-)
-
-DEFAULTBODY = "tnfbdyname"
-TMPDIR = "tneftmpdir"
-TNEFBODYTYPES = ("html", "rtf", "txt")
-
-class TNEFError(Exception):
-   "raised whenever something goes wrong invoking the command-line"
+# package
+import cmd
+from errors import TNEFProcessingException
+from config import TNEF_DIRECTORY, TNEF_BODYFILENAME, TNEF_BODYPREFERENCE
+from util import temporary
 
 
-class TNEFBodyNotFoundException(TNEFError):
-   "no body of the requested type"
-   
-def runTnef(sourcefile, args):
-   "feed cmdline an open fileobj & args"
-   args = ("tnef",) + args
-   TNEF = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-   out, err = TNEF.communicate(sourcefile.read())
-   sourcefile.close()   
-   if TNEF.returncode:
-      raise TNEFError("Problem running tnef command: %s" % err)
+__all__ = ("hasBody", "hasFiles", "hasContent", "getBody", "listBodyTypes")
 
-   return out
-   
+TNEFBODYTYPES = ("rtf", "html", "txt")
 
-def getBodyTypes(sourcefile):
+
+class TNEFAttachment:
+   pass
+
+   def __init__(self, sourcefile):
+      self.source = sourcefile
+      filenames = cmd.listContents(body=TNEF_BODYFILENAME, preference="all")
+
+      self.rtf = self.html = self.text = None
+
+      for filename in filenames:
+         if TNEF_BODYFILENAME in filename:
+            pass
+
+
+   def getRTF(self):
+      return self.rtf or getBody(preference="rtf")
+
+   def getHTML(self):
+      return self.html
+
+   def getText(self):
+      return self.text
+
+   def getAttachments(self):
+      return self.attachments
+
+
+
+# TNEF CONTENT RETRIEVAL
+
+def getBody(sourcefile, preference=None):
+   """
+   By default, looks up body types in default order (rtf > html > txt).
+
+   The lookup preference can be altered by giving a tuple with maximum
+   three items out of "rtf", "html" and "txt".
+   string made of first chars of types. So 'r' looks for rtf only, 'ht'
+   for html first and then text, and so on.
+
+   If no body is found, an exception is raised.
+   """
+
+   if preference:
+      shortpref = "".join([item[0] for item in preference])
+   else:
+      shortpref = TNEF_BODYPREFERENCE
+
+   # acceptable body type exists in the TNEF file?
+   bodytypes = listBodyTypes(sourcefile)
+   if not set(preference).intersection(bodytypes):
+      errmsg = "%s contains %s bodies, no %s"
+      errdata = (sourcefile.name, ", ".join(bodytypes), ", ".join(preference))
+      raise TNEFProcessingException(errmsg % errdata)
+
+
+   body = None
+      
+   with temporary():
+      cmd.extractContents(sourcefile, body=TNEF_BODYFILENAME, preference=shortpref)
+      logging.debug("getBody extracted files: %s" % ", ".join(os.listdir('.')))
+      for suffix in preference:
+         bodyfilename = TNEF_BODYFILENAME + "." + suffix
+         try:
+            bodyfile = open(bodyfilename)
+         except:
+            logging.debug("getBody could not open %s" % bodyfilename)
+            continue
+            
+         body = bodyfile.read()
+         bodyfile.close()
+         break
+
+   if body:
+      return body
+   else:
+      errdata = (", ".join(preference), sourcefile.name)
+      raise TNEFProcessingException("%s bodies not found in %s" % errdata)
+      
+
+def getAttachments(sourcefile, name=None):
+   "get attached files, or just one id'd by 'name'"
+
+
+# TOOLS FOR CHECKING TNEF CONTENTS
+
+def listBodyTypes(sourcefile, preference=None):
    "get a list of body types found"
-   files = listFilesAndTypes(sourcefile, bodyname=DEFAULTBODY).keys()
+
+   pref = preference or "all"
+   files = cmd.listContents(sourcefile, body=TNEF_BODYFILENAME, preference=pref)
+
    types = []
    for fn in files:
       for tt in TNEFBODYTYPES:
-         if fn == '.'.join((DEFAULTBODY, tt)): 
+         if fn == '.'.join((TNEF_BODYFILENAME, tt)):
             types.append(tt)
+   logging.debug("%s contains following bodies: %s" % (sourcefile.name, ", ".join(types)))
    return types
-   
-   
-def getBody(sourcefile, bodytype="html"):
-   "return body text or raise TNEFBodyNotFoundException if the file has no body of the type"
 
-   srccopy = StringIO(sourcefile.read())
-   sourcefile.seek(0)
 
-   files = listFilesAndTypes(srccopy, bodyname=DEFAULTBODY).keys()
-   filename = '.'.join((DEFAULTBODY, bodytype))
-
-   # desired body type is available
-
-   if  filename in files:
-      os.mkdir(TMPDIR)
-      extracted = extractAll(sourcefile, targetdir=TMPDIR, bodyname=DEFAULTBODY)
-      body = None
-      for extracted_file_path in extracted:
-         if filename in extracted_file_path:
-            bodyfp = open(extracted_file_path)
-            body = bodyfp.read()
-            bodyfp.close()
-            del bodyfp
-         os.remove(extracted_file_path)
-      os.rmdir(TMPDIR)
-      return body
-      
-   else:
-      raise TNEFBodyNotFoundException("no %s body found" % bodytype)
-  
-   
-def hasBody(sourcefile):
-   "true if the TNEF file contains a content body"
-   files = listFilesAndTypes(sourcefile, bodyname=DEFAULTBODY).keys()
-   if DEFAULTBODY in "".join(files):
-      return True
+def hasBody(sourcefile, preference=None):
+   "true if the TNEF file contains a content body within preference list"
+   pref = preference or "all"
+   filenames = cmd.listContents(sourcefile, body=TNEF_BODYFILENAME, preference=pref)
+   for filename in filenames:
+      if TNEF_BODYFILENAME in filename:
+         return True
    return False
 
    
 def hasFiles(sourcefile):
    "true if the TNEF file contains embedded files; ignores body"
-   filenames = listFilesAndTypes(sourcefile, bodyname=DEFAULTBODY).keys()
-   if not filenames or DEFAULTBODY in filenames[0]:
-      return False
-   return True
-
-
-def hasContent(sourcefile):
-   "true of the file contains body OR files"
-   if listFilesAndTypes(sourcefile):
+   if cmd.listContents(sourcefile):
       return True
    return False
 
 
-def parseListing(listing):
-   "return a dict of file names as keys & types as values"
-   listing = listing.strip().split("\n")
-   files = {}
-   for l in listing:
-      if l:
-         fname, ftype = l.split('|')
-         files[fname] = ftype
-   return files
+def hasContent(sourcefile):
+   "true of the file contains body OR files"
+   if cmd.listContents(sourcefile, body=True):
+      return True
+   return False
 
+
+def parseInfo(sourcefile):
+   "retrieve the info into a datadict"
+   filelist = cmd.listContents(sourcefile, body=True, preference="all")
+   data = {}
    
-def listFilesAndTypes(sourcefile, bodyname=None):
-   "list files, including body"
-   args = ("--list-with-mime-types",)   
-
-   if bodyname:
-      args += ("--save-body=%s" % bodyname,)
-   else:
-      args += ("--save-body",)
-
-   output = runTnef(sourcefile, args)
-   return parseListing(output)
-
-
-def extractAll(sourcefile, targetdir=None, bodyname=None):
-   "return {fullpath: contenttype} list of extracted stuff"
-
-   args = ("--overwrite",)
-
-   if bodyname:
-      args += ("--save-body=%s" % bodyname,)
-   else:
-      args += ("--save-body",)
-
-   if targetdir:
-      args += ("--directory=%s" % targetdir,)
-   else:
-      targetdir = os.curdir
-   files = []
-   runTnef(sourcefile, args) #gives no output
-   return [targetdir + os.sep + fn for fn in os.listdir(targetdir)]
+   
