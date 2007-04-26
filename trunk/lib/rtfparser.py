@@ -7,7 +7,7 @@ from pyparsing import alphas, nums, printables, alphanums
 from pyparsing import restOfLine, oneOf, OneOrMore, ZeroOrMore
 from pyparsing import ParseException
 
-__all__ = ("RTF", "getEmbeddedHtml", "RTFParserException")
+__all__ = ("RTF", "extractHTML", "RTFParserException")
 
 class RTFParserException(Exception):
    "indicate failed RTF parsing"
@@ -78,7 +78,7 @@ RTF = OneOrMore(
 )  
 
 
-def getEmbeddedHtml(rtfsource):
+def extractHTML(rtfsource):
    "parse a file-like RTF source & return extracted HTML"
    html = []
 
@@ -96,9 +96,4 @@ def getEmbeddedHtml(rtfsource):
 
    return "\n".join(html)
 
-
-if __name__=="__main__":
-
-   from test import test_rtfparser as tester
-   tester.convertRtfTestFiles("test")
    
