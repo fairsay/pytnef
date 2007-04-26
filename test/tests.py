@@ -1,115 +1,118 @@
 # First install the package (python setup.py install),
 # then run these tests from within the test directory
 
-import unittest, os
-from cStringIO import StringIO
+from __future__ import with_statement
+import unittest, os, sys
+from StringIO import StringIO
 from logging import root, DEBUG
+
 import tnef
+from tnef.config import *
+from tnef.errors import *
+from tnef.util import temporary
 
 root.setLevel(DEBUG)
 
+datadir = "data"
 tmpdir = "tmptestdir"
 
 
 def getFiles(filename):
-   f = open(filename)
+   f = open(getpath(filename))
    s = StringIO(f.read())
    f.seek(0)
    return f, s
 
+
+def getpath(filename):
+   return sys.path[0] + os.sep + datadir + os.sep + filename
+   
 class TestTnefFunctions(unittest.TestCase):
     
-   def setUp(self):
-      os.chdir("data")
-      os.mkdir(tmpdir)
-      
-   def tearDown(self):
-      os.rmdir(tmpdir)
-      os.chdir("..")
-
    def testHasBody(self):
       f, s = getFiles("body.tnef")
       self.failUnless(tnef.hasBody(f))
-
-      self.failUnless(tnef.hasBody(s))
+      #self.failUnless(tnef.hasBody(s))
+      
       f, s = getFiles("multi-name-property.tnef")
       self.failIf(tnef.hasBody(f))
-      self.failIf(tnef.hasBody(s))
+      #self.failIf(tnef.hasBody(s))
 
    def testHasFiles(self):
       f, s = getFiles("multi-name-property.tnef")
       self.failIf(tnef.hasFiles(f))
-
-      self.failIf(tnef.hasFiles(s))
-      self.failUnless(tnef.hasFiles(open("two-files.tnef")))
-      self.failIf(tnef.hasFiles(open("body.tnef")))
+      #self.failIf(tnef.hasFiles(s))
+      
+      self.failUnless(tnef.hasFiles(open(getpath("two-files.tnef"))))
+      self.failIf(tnef.hasFiles(open(getpath("body.tnef"))))
 
    def testHasContent(self):
-      self.failUnless(tnef.hasContent(open("two-files.tnef")))
-      self.failIf(tnef.hasContent(open("multi-name-property.tnef")))
-      self.failUnless(tnef.hasContent(open("body.tnef")))
+      self.failUnless(tnef.hasContent(open(getpath("two-files.tnef"))))
+      self.failIf(tnef.hasContent(open(getpath("multi-name-property.tnef"))))
+      self.failUnless(tnef.hasContent(open(getpath("body.tnef"))))
 
-   def testlistFilesAndTypes_Body_NoMimeTypes(self):
+
+   def testlistContents_Body_NoMimeTypes(self):
       correct = {
          "AUTOEXEC.BAT": "",
          "CONFIG.SYS": "",
          "boot.ini": "",
-         "%s.rtf" % tnef.DEFAULTBODY: "",
+         "%s.rtf" % TNEF_BODYFILENAME: "",
       }
-      tested = tnef.listFilesAndTypes(open("data-before-name.tnef"), bodyname=tnef.DEFAULTBODY)
+      sourcefile = open(getpath("data-before-name.tnef"))
+      tested = tnef.listContents(sourcefile, body=TNEF_BODYFILENAME, mimeinfo=True)
       self.assertEqual(correct, tested)
+
       
-   def testlistFilesAndTypes_NoBody_MimeTypes(self):
+   def testListContents_NoBody_MimeTypes(self):
       correct = {
          "AUTHORS": "application/octet-stream",
          "README": "application/octet-stream",
       }
-      tested = tnef.listFilesAndTypes(open("two-files.tnef"))
+      tested = tnef.listContents(open(getpath("two-files.tnef")), mimeinfo=True)
       self.assertEqual(correct, tested)
+
       
-   def testExtractAll_Body_NoMimeTypes(self):
-      "use StringIO to make sure filelike objects are ok"
-      pth = tmpdir + os.sep
+   def testExtractContents_Body_NoMimeTypes(self):
+      "are files & bodies listed ok by listContents?"
+      
       correct = [
-         "%sAUTOEXEC.BAT" % pth,
-         "%sCONFIG.SYS" % pth,
-         "%sboot.ini" % pth,
-         "%s%s.rtf" % (pth, tnef.DEFAULTBODY)
+         "AUTOEXEC.BAT", "CONFIG.SYS", "boot.ini", TNEF_BODYFILENAME + ".rtf"
       ]
-      tfile = open("data-before-name.tnef")
-      files = tnef.listFilesAndTypes(tfile, bodyname=tnef.DEFAULTBODY).keys()
-      tfile = StringIO(open("data-before-name.tnef").read())
-      listing = tnef.extractAll(tfile, targetdir=tmpdir, bodyname=tnef.DEFAULTBODY)
-      for fn in files:
-         pth = tmpdir + os.sep + fn
-         self.failUnless(os.path.isfile(pth))
-         os.remove(pth)
-      self.assertEqual(correct, listing)
+      
+      sourcefile = open(getpath("data-before-name.tnef"))
+      filenames = tnef.listContents(sourcefile, body=TNEF_BODYFILENAME)
+      with temporary():
+         tnef.extractContents(sourcefile, body=TNEF_BODYFILENAME)
+         for filename in filenames:
+            self.failUnless(os.path.isfile(filename))
+      self.assertEqual(correct, filenames)
+
 
    def testGetBody_TypeIsAvailable(self):
-      "when the desired body type is available"
+      "getBody returns existing desired body type?"
       f, s = getFiles("body.tnef")
-      retrieved = tnef.getBody(f, bodytype="html")
-      content = open("message.html").read()
+      retrieved = tnef.getBody(f, preference=("html",))
+      content = open(getpath("message.html")).read()
       self.assertEqual(content, retrieved)
 
       #retrieved = tnef.getBody(s, bodytype="html")
       #self.assertEqual(content, retrieved)
 
+
    def testGetBody_TypeIsNotAvailable(self):
-      "when the desired body type is NOT available"
+      "getBody raises exception when desired body type is not available?"
       def raiser():
-         retrieved = tnef.getBody(open("body.tnef"), bodytype="rtf")
-      self.assertRaises(tnef.TNEFBodyNotFoundException, raiser)
+         retrieved = tnef.getBody(open(getpath("body.tnef")), preference=("rtf",))
+      self.assertRaises(TNEFProcessingException, raiser)
 
-   def testGetBodyTypes_OneBodyNoFiles(self):
+   def testListBodyTypes_OneBodyNoFiles(self):
       "get list of body types (html,rtf,text) in TNEF file"
-
-      self.assertEqual("html", tnef.getBodyTypes(open("body.tnef"))[0])
+      self.assertEqual("html", tnef.listBodyTypes(open(getpath("body.tnef")))[0])
       
-   def testGetBodyTypes_OneBodyManyFiles(self):
+   def testListBodyTypes_OneBodyManyFiles(self):
       "get body type when there are many attached files"
-      self.assertEqual("rtf", tnef.getBodyTypes(open("data-before-name.tnef"))[0])
+      self.assertEqual("rtf", tnef.listBodyTypes(open(getpath("data-before-name.tnef")))[0])
 
 if __name__=="__main__":   
    unittest.main()

@@ -16,8 +16,8 @@ Operating System :: POSIX
 import sys
 from distutils.core import setup
 
-from ez_setup import use_setuptools
-use_setuptools()
+#from ez_setup import use_setuptools
+#use_setuptools()
 
 if sys.version_info < (2, 3):
     _setup = setup
@@ -29,7 +29,7 @@ if sys.version_info < (2, 3):
 doclines = __doc__.split("\n")
 
 setup(name="pytnef",
-      version="0.3",
+      version="0.4",
       maintainer="Petri Savolainen",
       maintainer_email="petri.savolainen@iki.fi",
       license = "http://www.fsf.org/licensing/licenses/lgpl.txt",
