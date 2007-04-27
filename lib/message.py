@@ -1,7 +1,11 @@
-from email import Message
-from tnef import *
+"""
+module to extend the email.Message of python stdlib with TNEF parsing
+and extraction of HTML from TNEF RTF attachments
+"""
 
-class Message2(Message):
+import email
+
+class Message2(email.Message):
    "a message with added tnef functionality"
    
    

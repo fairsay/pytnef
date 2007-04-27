@@ -1,5 +1,5 @@
 """
-config information
+This module contains only configuration settings.
 """
 
 # the only way to list tnef body is via --save-body

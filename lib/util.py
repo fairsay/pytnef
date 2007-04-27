@@ -1,6 +1,7 @@
 """
-utility functions
+A few utility functions used by other modules.
 """
+
 import os, logging
 from contextlib import contextmanager
 
@@ -10,7 +11,7 @@ from config import *
 
 @contextmanager
 def temporary():
-   "make tmpdir at begin, remove it and files in it at the end"
+   "make tmpdir at begin, move it, move out & remove it and files in it at the end"
    os.mkdir(TNEF_DIRECTORY)
    os.chdir(TNEF_DIRECTORY)
    yield

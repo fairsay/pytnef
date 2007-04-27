@@ -2,8 +2,9 @@
 # then run these tests from within the test directory
 
 from __future__ import with_statement
+from contextlib import closing
 import unittest, os, sys
-from StringIO import StringIO
+from cStringIO import StringIO
 from logging import root, DEBUG
 
 import tnef
@@ -46,30 +47,20 @@ class TestTnefFunctions(unittest.TestCase):
       self.failUnless(tnef.hasFiles(open(getpath("two-files.tnef"))))
       self.failIf(tnef.hasFiles(open(getpath("body.tnef"))))
 
-   def testHasContent(self):
-      self.failUnless(tnef.hasContent(open(getpath("two-files.tnef"))))
-      self.failIf(tnef.hasContent(open(getpath("multi-name-property.tnef"))))
-      self.failUnless(tnef.hasContent(open(getpath("body.tnef"))))
 
-
-   def testlistContents_Body_NoMimeTypes(self):
-      correct = {
-         "AUTOEXEC.BAT": "",
-         "CONFIG.SYS": "",
-         "boot.ini": "",
-         "%s.rtf" % TNEF_BODYFILENAME: "",
-      }
+   def testlistBodies(self):
+      correct = ["rtf"]
       sourcefile = open(getpath("data-before-name.tnef"))
-      tested = tnef.listContents(sourcefile, body=TNEF_BODYFILENAME, mimeinfo=True)
+      tested = tnef.listBodies(sourcefile)
       self.assertEqual(correct, tested)
 
       
-   def testListContents_NoBody_MimeTypes(self):
+   def testListFiles_MimeTypes(self):
       correct = {
          "AUTHORS": "application/octet-stream",
          "README": "application/octet-stream",
       }
-      tested = tnef.listContents(open(getpath("two-files.tnef")), mimeinfo=True)
+      tested = tnef.listFiles(open(getpath("two-files.tnef")), mimeinfo=True)
       self.assertEqual(correct, tested)
 
       
@@ -89,6 +80,20 @@ class TestTnefFunctions(unittest.TestCase):
       self.assertEqual(correct, filenames)
 
 
+   def testGetFiles(self):
+      "getFiles extracts attached files?"
+      
+      correct = {}
+      with closing(open(getpath("README"))) as rfp:
+         correct["README"] = rfp.read()
+      with closing(open(getpath("AUTHORS"))) as afp:
+         correct["AUTHORS"] = afp.read()            
+
+      with closing(open(getpath("two-files.tnef"))) as source:
+         for name, content in tnef.getFiles(source):
+            assert content == correct[name]
+               
+      
    def testGetBody_TypeIsAvailable(self):
       "getBody returns existing desired body type?"
       f, s = getFiles("body.tnef")
@@ -106,13 +111,20 @@ class TestTnefFunctions(unittest.TestCase):
          retrieved = tnef.getBody(open(getpath("body.tnef")), preference=("rtf",))
       self.assertRaises(TNEFProcessingException, raiser)
 
-   def testListBodyTypes_OneBodyNoFiles(self):
+
+   def testListBodies_OneBodyNoFiles(self):
       "get list of body types (html,rtf,text) in TNEF file"
-      self.assertEqual("html", tnef.listBodyTypes(open(getpath("body.tnef")))[0])
+      sourcefile = open(getpath("body.tnef"))
+      bodytype = tnef.listBodies(sourcefile, preference=("html",))[0]
+      self.assertEqual("html", bodytype)
       
-   def testListBodyTypes_OneBodyManyFiles(self):
+      
+   def testListBodies_OneBodyManyFiles(self):
       "get body type when there are many attached files"
-      self.assertEqual("rtf", tnef.listBodyTypes(open(getpath("data-before-name.tnef")))[0])
+      sourcefile = open(getpath("data-before-name.tnef"))
+      bodytype = tnef.listBodies(sourcefile)[0]
+      self.assertEqual("rtf", bodytype)
+
 
 if __name__=="__main__":   
    unittest.main()
