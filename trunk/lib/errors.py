@@ -1,3 +1,6 @@
+"""
+This module contains exception & error definitions
+"""
 
 class TNEFRunnerError(Exception):
    "raised whenever something goes wrong invoking the command-line"

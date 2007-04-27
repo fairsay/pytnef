@@ -1,3 +1,9 @@
+"""
+The module implements a pyparsing - based special-purpose RTF parser
+specifically for extracting HTML from RTF contained within a TNEF
+attachment.
+"""
+
 import sys
 from logging import critical
 
@@ -7,7 +13,7 @@ from pyparsing import alphas, nums, printables, alphanums
 from pyparsing import restOfLine, oneOf, OneOrMore, ZeroOrMore
 from pyparsing import ParseException
 
-__all__ = ("RTF", "extractHTML", "RTFParserException")
+__all__ = ("extractHTML", "RTFParserException")
 
 class RTFParserException(Exception):
    "indicate failed RTF parsing"

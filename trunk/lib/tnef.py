@@ -1,10 +1,20 @@
 """
-high-level access to tnef decoding
+The tnef module provides high-level access to tnef decoding; namely,
+listing contents of TNEF attachments and extracting and retrieving
+TNEF body/bodies and embedded files.
+
+@group content checking: has*
+@group content retrieval: get*
+@group content listing: list*
+@group utilities: listBodyTypes, getInfo
 """
+
 from __future__ import with_statement
+from contextlib import closing
+
 import os, logging
 from copy import copy
-from StringIO import StringIO
+from cStringIO import StringIO
 
 # package
 import cmd
@@ -13,40 +23,17 @@ from config import TNEF_DIRECTORY, TNEF_BODYFILENAME, TNEF_BODYPREFERENCE
 from util import temporary
 
 
-__all__ = ("hasBody", "hasFiles", "hasContent", "getBody", "listBodyTypes")
+__author__ = "Petri Savolainen"
+__all__ = (
+   "hasBody", "hasFiles",
+   "getBody", "getFiles",
+   "listFiles", "listBodies",
+)
 
 TNEFBODYTYPES = ("rtf", "html", "txt")
 
 
-class TNEFAttachment:
-   pass
-
-   def __init__(self, sourcefile):
-      self.source = sourcefile
-      filenames = cmd.listContents(body=TNEF_BODYFILENAME, preference="all")
-
-      self.rtf = self.html = self.text = None
-
-      for filename in filenames:
-         if TNEF_BODYFILENAME in filename:
-            pass
-
-
-   def getRTF(self):
-      return self.rtf or getBody(preference="rtf")
-
-   def getHTML(self):
-      return self.html
-
-   def getText(self):
-      return self.text
-
-   def getAttachments(self):
-      return self.attachments
-
-
-
-# TNEF CONTENT RETRIEVAL
+# RETRIEVING CONTENTS
 
 def getBody(sourcefile, preference=None):
    """
@@ -66,12 +53,11 @@ def getBody(sourcefile, preference=None):
       shortpref = TNEF_BODYPREFERENCE
 
    # acceptable body type exists in the TNEF file?
-   bodytypes = listBodyTypes(sourcefile)
+   bodytypes = listBodies(sourcefile)
    if not set(preference).intersection(bodytypes):
       errmsg = "%s contains %s bodies, no %s"
       errdata = (sourcefile.name, ", ".join(bodytypes), ", ".join(preference))
       raise TNEFProcessingException(errmsg % errdata)
-
 
    body = None
       
@@ -97,31 +83,55 @@ def getBody(sourcefile, preference=None):
       raise TNEFProcessingException("%s bodies not found in %s" % errdata)
       
 
-def getAttachments(sourcefile, name=None):
-   "get attached files, or just one id'd by 'name'"
+def getFiles(sourcefile, names=[]):
+   "get all attached files, or a subset id'd by file names"
+   with temporary():
+      cmd.extractContents(sourcefile)
+      for filename in os.listdir('.'):
+         with closing(open(filename)) as attachment:
+            yield filename, attachment.read()
+      
+# LISTING TNEF CONTENTS
 
 
-# TOOLS FOR CHECKING TNEF CONTENTS
+def listFiles(sourcefile, mimeinfo=False):
+   "return list of attached file names and optionally their mime types"
+   return cmd.listContents(sourcefile, mimeinfo=mimeinfo)
 
-def listBodyTypes(sourcefile, preference=None):
-   "get a list of body types found"
 
-   pref = preference or "all"
-   files = cmd.listContents(sourcefile, body=TNEF_BODYFILENAME, preference=pref)
+def listBodies(sourcefile, preference=None):
+   "return list of contained message bodies (body types rtf/html/text)"
+   
+   if preference:
+      shortpref = "".join([item[0] for item in preference])
+   else:
+      shortpref = "all"
+   
+   files = cmd.listContents(sourcefile, body=TNEF_BODYFILENAME, preference=shortpref)
 
-   types = []
+   bodies = []
    for fn in files:
       for tt in TNEFBODYTYPES:
          if fn == '.'.join((TNEF_BODYFILENAME, tt)):
-            types.append(tt)
-   logging.debug("%s contains following bodies: %s" % (sourcefile.name, ", ".join(types)))
-   return types
-
+            bodies.append(tt)
+            
+   logging.debug("%s contains following bodies: %s" % (sourcefile.name, ", ".join(bodies)))
+   return bodies
+   
+   
+   
+# CHECKING CONTENTS
 
 def hasBody(sourcefile, preference=None):
-   "true if the TNEF file contains a content body within preference list"
-   pref = preference or "all"
-   filenames = cmd.listContents(sourcefile, body=TNEF_BODYFILENAME, preference=pref)
+   "return true if the TNEF file contains a content body within preference list"
+   
+   if preference:
+      shortpref = "".join([item[0] for item in preference])
+   else:
+      shortpref = "all"
+   
+   filenames = cmd.listContents(sourcefile, body=TNEF_BODYFILENAME, preference=shortpref)
+   
    for filename in filenames:
       if TNEF_BODYFILENAME in filename:
          return True
@@ -129,22 +139,15 @@ def hasBody(sourcefile, preference=None):
 
    
 def hasFiles(sourcefile):
-   "true if the TNEF file contains embedded files; ignores body"
+   "return true if the TNEF file contains embedded files; ignores body"
    if cmd.listContents(sourcefile):
       return True
    return False
 
 
-def hasContent(sourcefile):
-   "true of the file contains body OR files"
-   if cmd.listContents(sourcefile, body=True):
-      return True
-   return False
 
 
-def parseInfo(sourcefile):
-   "retrieve the info into a datadict"
-   filelist = cmd.listContents(sourcefile, body=True, preference="all")
-   data = {}
    
    
+   
+

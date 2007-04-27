@@ -1,5 +1,7 @@
 """
-a wrapper to the 'tnef' command
+This module implements a low-level wrapper to the 'tnef' command. There should
+be no need to use it directly; the higher-level API implemented in tnef.tnef
+and imported to the top-level package namespace should be used instead.
 """
 
 import logging
@@ -23,7 +25,7 @@ __all__ = ("listContents", "extractContents")
 
 
 def listContents(sourcefile, **kwargs):
-   "get list of files"
+   "wrapper for using tnef command body/attachment listing functionality"
 
    kwargs.update({"contents":True})
 
@@ -38,7 +40,7 @@ def listContents(sourcefile, **kwargs):
 
 
 def extractContents(sourcefile, **kwargs):
-   "extract all files"
+   "wrapper for using tnef command body/attachment extraction functionality"
 
    _tnef(sourcefile, kwargs)
 
