@@ -12,21 +12,11 @@ from tnef.config import *
 from tnef.errors import *
 from tnef.util import temporary
 
+from util import *
+
 root.setLevel(DEBUG)
 
-datadir = "data"
 tmpdir = "tmptestdir"
-
-
-def getFiles(filename):
-   f = open(getpath(filename))
-   s = StringIO(f.read())
-   f.seek(0)
-   return f, s
-
-
-def getpath(filename):
-   return sys.path[0] + os.sep + datadir + os.sep + filename
    
 class TestTnefFunctions(unittest.TestCase):
     
