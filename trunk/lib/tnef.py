@@ -35,15 +35,17 @@ TNEFBODYTYPES = ("rtf", "html", "txt")
 
 # RETRIEVING CONTENTS
 
-def getBody(sourcefile, preference=None):
+def getBody(sourcefile, preference=None, convert=True):
    """
    By default, looks up body types in default order (rtf > html > txt).
 
-   The lookup preference can be altered by giving a tuple with maximum
-   three items out of "rtf", "html" and "txt".
-   string made of first chars of types. So 'r' looks for rtf only, 'ht'
-   for html first and then text, and so on.
-
+   @type sourcefile: file
+   @type preference: tuple
+   @param preference: The lookup preference can be altered by giving a tuple consisting
+   one or more out of "rtf", "html" and "txt".
+   @param convert: return html found inside rtf instead of returning rtf?
+   @rtype string   
+      
    If no body is found, an exception is raised.
    """
 

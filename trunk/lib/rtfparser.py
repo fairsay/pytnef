@@ -13,7 +13,7 @@ from pyparsing import alphas, nums, printables, alphanums
 from pyparsing import restOfLine, oneOf, OneOrMore, ZeroOrMore
 from pyparsing import ParseException
 
-__all__ = ("extractHTML", "RTFParserException")
+__all__ = ("extract_html_line", "extract_html_lines", "RTFParserException", "parse", "write_html_document")
 
 class RTFParserException(Exception):
    "indicate failed RTF parsing"
@@ -84,22 +84,40 @@ RTF = OneOrMore(
 )  
 
 
-def extractHTML(rtfsource):
-   "parse a file-like RTF source & return extracted HTML"
-   html = []
+def parse(rtfstring):
+   "return parse result as string"
+   try:
+      result = RTF.parseString(rtfstring)
+   except ParseException, e:
+      raise RTFParserException("could not parse '%s'... : %s" % (rtfstring[:30], e))
+   return "".join(result)
+      
+   
+def extract_html_line(rtfline):
+   "extract a single line of HTML embedded in RTF"
+   return rtfline if rtfline.isspace() else parse(rtfline)
+   
+   
+def extract_html_lines(rtffile):
+   "extract a full HTML document embedded in RTF"
 
-   for i, l in enumerate(rtfsource.read().split("\n")):
-      l = l.strip()
-      if l:
-         try:
-            r = RTF.parseString(l)
-         except ParseException, e:
-            raise RTFParserException("failed at line %i: %s..." % (i, l[:30]))
-            # print "rtfparser error: %s" % e
-            #r = None
-            #if r: 
-         html.append("".join(r))
+   for i, l in enumerate(rtffile):
+      try:
+         if l:
+            result = extract_html_line(l)
+      except RTFParserException, e:
+         raise RTFParserException("line %i: %s" % (i, e))
+         
+      if result:
+         yield result
 
-   return "\n".join(html)
-
+   
+def write_html_document(sourcefilename, htmlfilename):
+   "convenience for writing html out from rtf"
+   src = open(sourcefilename)
+   htmlfile = open(htmlfilename, "w")
+   for l in extract_html_lines(src):
+      htmlfile.write(l)
+   src.close()
+   htmlfile.close()
    
