@@ -4,24 +4,24 @@
 #include <ytnef.h>
 #include <tnef-types.h>
 
-
 static PyObject *TNEFError;
 
 
 static PyObject * get_info(PyObject *self, PyObject *args)
 {
    BYTE *tnefinput;
-   int size; // size of passed TNEF data string
-   if (!PyArg_ParseTuple(args, "s#", &tnefinput))
+   long size; // size of passed TNEF data string
+   if (!PyArg_ParseTuple(args, "s#", &tnefinput, &size))
       return NULL;
-
-   size = strlen(tnefinput);
-      
-   //TNEFStruct TNEF;
-   //const char *parseresult;
-   //parseresult = TNEFParseMemory(tnefdata, size, &TNEF);
-
-   return Py_BuildValue("i", size);
+     
+   TNEFStruct TNEF;
+   //TNEFInitialize(&TNEF);
+   int result = TNEFParseMemory(tnefinput, size, &TNEF);
+   //TNEFFree(&TNEF);
+   printf("%i", result);
+   printf("%s", TNEF.body.data);
+   //printf("%i", size);
+   return Py_BuildValue("s#", TNEF.body.data, TNEF.body.size);
 }
 
 // MODULE METHOD TABLE
