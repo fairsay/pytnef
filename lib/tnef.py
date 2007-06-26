@@ -39,7 +39,7 @@ def getBody(sourcefile, preference=None, extract=True):
    """
    By default, looks up body types in default order (rtf > html > txt).
 
-   @type sourcefile: file
+   @type sourcefile: open file (in mode 'rb')
    @type preference: tuple
    @param preference: The lookup preference can be altered by giving a tuple consisting
    one or more out of "rtf", "html" and "txt".
