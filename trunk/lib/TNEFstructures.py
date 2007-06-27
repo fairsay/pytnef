@@ -47,6 +47,7 @@ class TNEFIOStruct(Structure):
       #("data", POINTER(void))
    ]
 
+TNEFIOStruct._fields_.insert(0, ("InitProc", CFUNCTYPE(c_int, POINTER(TNEFIOStruct))))
 
 class MAPIProperty(Structure):
 
