@@ -44,10 +44,12 @@ class TNEFIOStruct(Structure):
       #int (*InitProc) (struct _TNEFIOStruct *IO);
       #int (*ReadProc) (struct _TNEFIOStruct *IO, int size, int count, void *dest);
       #int (*CloseProc) (struct _TNEFIOStruct *IO);
-      #("data", POINTER(void))
+      ("data", c_void_p),
    ]
 
 TNEFIOStruct._fields_.insert(0, ("InitProc", CFUNCTYPE(c_int, POINTER(TNEFIOStruct))))
+TNEFIOStruct._fields_.insert(1, ("ReadProc", CFUNCTYPE(c_int, POINTER(TNEFIOStruct), c_int, c_int, c_void_p)))
+TNEFIOStruct._fields_.insert(2, ("CloseProc", CFUNCTYPE(c_int, POINTER(TNEFIOStruct))))
 
 class MAPIProperty(Structure):
 
