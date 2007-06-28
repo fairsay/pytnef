@@ -1,5 +1,7 @@
 from ctypes import *
 
+__all__ = ("TNEFStruct", "dtr", "renddata", "variableLength", "TNEFIOStruct", "MAPIProperty", "Attachment")
+
 DWORD = c_uint # unsigned int
 BYTE = c_ubyte   # unsigned char
 WORD =  c_ushort # unsigned short int
@@ -38,7 +40,7 @@ class variableLength(Structure):
    ]
 
 
-class TNEFIOStruct(Structure):
+class _TNEFIOStruct(Structure):
    
    _fields_ = [
       #int (*InitProc) (struct _TNEFIOStruct *IO);
@@ -47,9 +49,16 @@ class TNEFIOStruct(Structure):
       ("data", c_void_p),
    ]
 
-TNEFIOStruct._fields_.insert(0, ("InitProc", CFUNCTYPE(c_int, POINTER(TNEFIOStruct))))
-TNEFIOStruct._fields_.insert(1, ("ReadProc", CFUNCTYPE(c_int, POINTER(TNEFIOStruct), c_int, c_int, c_void_p)))
-TNEFIOStruct._fields_.insert(2, ("CloseProc", CFUNCTYPE(c_int, POINTER(TNEFIOStruct))))
+_TNEFIOStruct._fields_.insert(0, ("InitProc", CFUNCTYPE(c_int, POINTER(_TNEFIOStruct))))
+_TNEFIOStruct._fields_.insert(1, ("ReadProc", CFUNCTYPE(c_int, POINTER(_TNEFIOStruct), c_int, c_int, c_void_p)))
+_TNEFIOStruct._fields_.insert(2, ("CloseProc", CFUNCTYPE(c_int, POINTER(_TNEFIOStruct))))
+
+
+class TNEFIOStruct(_TNEFIOStruct):
+   "a trick to get the structure properly initialized"
+
+   _fields_ = _TNEFIOStruct._fields_
+
 
 class MAPIProperty(Structure):
 
