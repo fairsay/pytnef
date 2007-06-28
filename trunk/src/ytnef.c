@@ -6,6 +6,7 @@
 
 static PyObject *TNEFError;
 
+// GET_INFO IMPLEMENTATION
 
 static PyObject * get_info(PyObject *self, PyObject *args)
 {
@@ -15,14 +16,13 @@ static PyObject * get_info(PyObject *self, PyObject *args)
       return NULL;
      
    TNEFStruct TNEF;
-   //TNEFInitialize(&TNEF);
-   int result = TNEFParseMemory(tnefinput, size, &TNEF);
-   //TNEFFree(&TNEF);
-   printf("%i", result);
-   printf("%s", TNEF.body.data);
-   //printf("%i", size);
-   return Py_BuildValue("s#", TNEF.body.data, TNEF.body.size);
+   TNEFInitialize(&TNEF);
+   //TNEF.Debug = 2;
+   int result = TNEFParseMemory(tnefinput, size, &TNEF);  
+   TNEFFree(&TNEF);
+   return Py_BuildValue("s#", tnefinput, size);
 }
+
 
 // MODULE METHOD TABLE
 
@@ -43,3 +43,4 @@ PyMODINIT_FUNC initytnef(void) {
    Py_INCREF(TNEFError);
    PyModule_AddObject(m, "error", TNEFError);  
 }
+

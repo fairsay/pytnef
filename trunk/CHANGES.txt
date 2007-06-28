@@ -1,3 +1,11 @@
+0.5
+
+ - switched to accessing libytnef via ctypes
+
+0.4 (unreleased)
+
+ - attempted to build a python extension by hand
+
 0.3
  - added ability to extract HTML from TNEF RTF email body (requires that pyparsing is installed)
  

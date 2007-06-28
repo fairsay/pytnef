@@ -81,7 +81,7 @@ class MAPIProps(Structure):
    ]
 
 
-class Attachment(Structure):
+class _Attachment(Structure):
    
    _fields_ = [
       ("Date", dtr),
@@ -97,7 +97,12 @@ class Attachment(Structure):
       ("IconData", variableLength)
    ]
 
-Attachment._fields_.insert(8, ("next", POINTER(Attachment)))
+_Attachment._fields_.insert(8, ("next", POINTER(_Attachment)))
+
+
+class Attachment(_Attachment):
+
+   _fields_ = _Attachment._fields_
 
 
 class TNEFStruct(Structure):
