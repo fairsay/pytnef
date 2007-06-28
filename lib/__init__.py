@@ -7,5 +7,4 @@ The namespace package imports the higher-level API to TNEF decoding
 from tnef import *
 from rtfparser import *
 from cmd import *
-
-
+from TNEFstructures import *
