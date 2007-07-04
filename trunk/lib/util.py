@@ -36,7 +36,7 @@ def choose_payload(msg, types=(HTMLTYPE, TNEFTYPE, PLAINTYPE)):
    else:
       logging.warning("no %s payload in message, setting dummy!" % " or ".join(types))
       logging.warning("(found: %s)" % ", ".join(parts))
-      return (PLAINTYPE, "no usable content payload")
+      return (PLAINTYPE, "ascii", "no usable content payload")
 
 
 @contextmanager
