@@ -20,7 +20,7 @@ from cStringIO import StringIO
 import cmd
 from errors import TNEFProcessingException
 from config import TNEF_DIRECTORY, TNEF_BODYFILENAME, TNEF_BODYPREFERENCE
-from util import temporary
+from util import temporary, data2file
 
 
 __author__ = "Petri Savolainen"
@@ -34,6 +34,13 @@ TNEFBODYTYPES = ("rtf", "html", "txt")
 
 
 # RETRIEVING CONTENTS
+
+def getBodyFromString(datastr, preference=None, extract=True):
+   "easier way to use getBody in applications that retrieve an email msg from server"
+   with data2file(datastr) as tneffile:
+      body = getBody(tneffile, preference=preference, extract=extract)
+   return body
+
 
 def getBody(sourcefile, preference=None, extract=True):
    """
