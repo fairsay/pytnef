@@ -32,7 +32,7 @@ if sys.version_info < (2, 3):
 doclines = __doc__.split("\n")
 
 setup(name="pytnef",
-      version="0.4",
+      version="0.5",
       maintainer="Petri Savolainen",
       maintainer_email="petri.savolainen@iki.fi",
       license = "http://www.fsf.org/licensing/licenses/lgpl.txt",
