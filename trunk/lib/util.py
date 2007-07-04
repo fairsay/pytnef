@@ -12,18 +12,31 @@ HTMLTYPE = "text/html"
 PLAINTYPE = "text/plain"
 TNEFTYPE = "application/ms-tnef"
 
-def choose_payload(msg, types=(TNEFTYPE, HTMLTYPE, PLAINTYPE)):
-   "get preferred type of payload from msg as (type, payload) tuple"
-   parts = [part.get_content_type() for part in msg.get_payload()]
-   for contenttype in types:
-      if contenttype in parts:
-         logging.info("selected %s payload" % contenttype)
-         part = msg.get_payload()[parts.index(contenttype)]
-         payload = part.get_payload(decode=True)
-         return (contenttype, payload)
 
-   logging.warning("no %s payload in message, setting dummy!" % " or ".join(types))
-   return (PLAINTYPE, "no usable content payload")
+def choose_payload(msg, types=(HTMLTYPE, TNEFTYPE, PLAINTYPE)):
+   "set payload of a multipart msg to richest payload"
+
+   parts = [(part.get_content_type(), part) for part in msg.walk()]
+   parts = dict(parts)
+   part = None
+
+   for contenttype in types:
+      try:
+         part = parts[contenttype]
+         break
+      except:
+         pass
+
+   charset = part.get_content_charset()
+   
+   if part:
+      logging.info("selected %s payload (%s)" % (contenttype, charset or "unknown charset"))
+      payload = part.get_payload(decode=True)
+      return (contenttype, charset, payload)
+   else:
+      logging.warning("no %s payload in message, setting dummy!" % " or ".join(types))
+      logging.warning("(found: %s)" % ", ".join(parts))
+      return (PLAINTYPE, "no usable content payload")
 
 
 @contextmanager
@@ -31,14 +44,14 @@ def data2file(datastr):
    "utility to factor away the write/open4read functionality"
    tmp_name = os.tempnam()
    tnef_file = open(tmp_name, "wb")
-   tnef_file.write(payload)
+   tnef_file.write(datastr)
    tnef_file.flush()
    tnef_file.close()
    # mode needs to be rb
    tnef_file = open(tmp_name, "rb")
    yield tnef_file
    tnef_file.close()
-   del tnef_file
+   os.remove(tmp_name)   
 
 
 @contextmanager
