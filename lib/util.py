@@ -8,6 +8,38 @@ from contextlib import contextmanager
 # package
 from config import *
 
+HTMLTYPE = "text/html"
+PLAINTYPE = "text/plain"
+TNEFTYPE = "application/ms-tnef"
+
+def choose_payload(msg, types=(TNEFTYPE, HTMLTYPE, PLAINTYPE)):
+   "get preferred type of payload from msg as (type, payload) tuple"
+   parts = [part.get_content_type() for part in msg.get_payload()]
+   for contenttype in types:
+      if contenttype in parts:
+         logging.info("selected %s payload" % contenttype)
+         part = msg.get_payload()[parts.index(contenttype)]
+         payload = part.get_payload(decode=True)
+         return (contenttype, payload)
+
+   logging.warning("no %s payload in message, setting dummy!" % " or ".join(types))
+   return (PLAINTYPE, "no usable content payload")
+
+
+@contextmanager
+def data2file(datastr):
+   "utility to factor away the write/open4read functionality"
+   tmp_name = os.tempnam()
+   tnef_file = open(tmp_name, "wb")
+   tnef_file.write(payload)
+   tnef_file.flush()
+   tnef_file.close()
+   # mode needs to be rb
+   tnef_file = open(tmp_name, "rb")
+   yield tnef_file
+   tnef_file.close()
+   del tnef_file
+
 
 @contextmanager
 def temporary():
