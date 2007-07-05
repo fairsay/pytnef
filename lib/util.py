@@ -2,41 +2,13 @@
 A few utility functions used by other modules.
 """
 
-import os, logging
+import os, logging, sys
 from contextlib import contextmanager
 
 # package
 from config import *
 
-HTMLTYPE = "text/html"
-PLAINTYPE = "text/plain"
-TNEFTYPE = "application/ms-tnef"
-
-
-def choose_payload(msg, types=(HTMLTYPE, TNEFTYPE, PLAINTYPE)):
-   "set payload of a multipart msg to richest payload"
-
-   parts = [(part.get_content_type(), part) for part in msg.walk()]
-   parts = dict(parts)
-   part = None
-
-   for contenttype in types:
-      try:
-         part = parts[contenttype]
-         break
-      except:
-         pass
-
-   charset = part.get_content_charset()
-   
-   if part:
-      logging.info("selected %s payload (%s)" % (contenttype, charset or "unknown charset"))
-      payload = part.get_payload(decode=True)
-      return (contenttype, charset, payload)
-   else:
-      logging.warning("no %s payload in message, setting dummy!" % " or ".join(types))
-      logging.warning("(found: %s)" % ", ".join(parts))
-      return (PLAINTYPE, "ascii", "no usable content payload")
+logger = logging.getLogger("pytnef")
 
 
 @contextmanager
