@@ -22,6 +22,14 @@ from distutils.core import setup, Extension
 if os.name == "posix":
    PLATFORM_INCLUDES = ['/usr/include','/usr/include/python%i.%i' % sys.version_info[:2]]
    PLATFORM_LIBRARIES = ["/usr/lib","/usr/local/lib"]
+
+elif os.name =="nt":
+   PLATFORM_INCLUDES = None
+   PLATFORM_LIBRARIES = None
+   
+else:
+   sys.exit("unsupported platform %s" % os.name)
+   
 if sys.version_info < (2, 3):
     _setup = setup
     def setup(**kwargs):
@@ -31,6 +39,7 @@ if sys.version_info < (2, 3):
 
 doclines = __doc__.split("\n")
 
+# uncomment ext_modules to build the extension
 setup(name="pytnef",
       version="0.5",
       maintainer="Petri Savolainen",
@@ -39,13 +48,13 @@ setup(name="pytnef",
       platforms = ["unix"],
       packages = ["tnef"],
       package_dir = {"tnef": "lib"},
-      ext_modules=[Extension(
-         "ytnef",
-         [os.path.join("src","ytnef.c")],
-         include_dirs=PLATFORM_INCLUDES,
-         libraries = ["ytnef"],
-         library_dirs = PLATFORM_LIBRARIES,
-      )],
+      #ext_modules=[Extension(
+      #   "ytnef",
+      #   [os.path.join("src","ytnef.c")],
+      #   include_dirs=PLATFORM_INCLUDES,
+      #   libraries = ["ytnef"],
+      #   library_dirs = PLATFORM_LIBRARIES,
+      #)],
       description = doclines[0],
       classifiers = filter(None, classifiers.split("\n")),
       long_description = "\n".join(doclines[2:]),
