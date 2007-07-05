@@ -24,7 +24,8 @@ from util import temporary, data2file
 
 
 __author__ = "Petri Savolainen"
-__all__ = (
+
+__all__ = ( "getBodyFromString",
    "hasBody", "hasFiles",
    "getBody", "getFiles",
    "listFiles", "listBodies",
