@@ -60,6 +60,7 @@ def getBody(sourcefile, preference=None, extract=True):
    if preference:
       shortpref = "".join([item[0] for item in preference])
    else:
+      preference = TNEFBODYTYPES
       shortpref = TNEF_BODYPREFERENCE
 
    # acceptable body type exists in the TNEF file?
