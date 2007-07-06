@@ -31,6 +31,8 @@ __all__ = ( "getBodyFromString",
    "listFiles", "listBodies",
 )
 
+logger = logging.getLogger("tnef")
+
 TNEFBODYTYPES = ("rtf", "html", "txt")
 
 
@@ -64,7 +66,7 @@ def getBody(sourcefile, preference=None, extract=True):
       shortpref = TNEF_BODYPREFERENCE
 
    # acceptable body type exists in the TNEF file?
-   bodytypes = listBodies(sourcefile)
+   bodytypes = listBodies(sourcefile) or []
    if not set(preference).intersection(bodytypes):
       errmsg = "%s contains %s bodies, no %s"
       errdata = (sourcefile.name, ", ".join(bodytypes), ", ".join(preference))
@@ -74,13 +76,13 @@ def getBody(sourcefile, preference=None, extract=True):
       
    with temporary():
       cmd.extractContents(sourcefile, body=TNEF_BODYFILENAME, preference=shortpref)
-      logging.debug("getBody extracted files: %s" % ", ".join(os.listdir('.')))
+      logger.debug("getBody extracted files: %s" % ", ".join(os.listdir('.')))
       for suffix in preference:
          bodyfilename = TNEF_BODYFILENAME + "." + suffix
          try:
             bodyfile = open(bodyfilename)
          except:
-            logging.debug("getBody could not open %s" % bodyfilename)
+            logger.debug("getBody could not open %s" % bodyfilename)
             continue
             
          body = bodyfile.read()
@@ -130,7 +132,7 @@ def listBodies(sourcefile, preference=None):
          if fn == '.'.join((TNEF_BODYFILENAME, tt)):
             bodies.append(tt)
             
-   logging.debug("%s contains following bodies: %s" % (sourcefile.name, ", ".join(bodies)))
+   logger.debug("%s contains following bodies: %s" % (sourcefile.name, ", ".join(bodies)))
    return bodies
    
    

@@ -2,13 +2,11 @@
 A few utility functions used by other modules.
 """
 
-import os, logging, sys
+import os, sys
 from contextlib import contextmanager
 
 # package
 from config import *
-
-logger = logging.getLogger("pytnef")
 
 
 @contextmanager

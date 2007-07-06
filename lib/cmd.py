@@ -23,6 +23,7 @@ __all__ = ("listContents", "extractContents")
 # if 'mimeinfo' is set, a list of filename:mimetype dictionaries is
 # returned
 
+logger = logging.getLogger("tnef-command")
 
 def listContents(sourcefile, **kwargs):
    "wrapper for using tnef command body/attachment listing functionality"
@@ -35,7 +36,7 @@ def listContents(sourcefile, **kwargs):
       output = util.process_tnef_output(output, kwargs)
    else:
       output = []
-   logging.debug("listContents of %s: %s" % (sourcefile.name, ", ".join(output)))
+   logger.debug("listContents of %s: %s" % (sourcefile.name, ", ".join(output)))
    return output
 
 
