@@ -3,7 +3,7 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>lib.cmd</title>
+  <title>tnef.cmd</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
 </head>
@@ -15,8 +15,8 @@
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
   <!-- Home link -->
-      <th bgcolor="#70b0f0" class="navbar-select"
-          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="tnef-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -37,7 +37,7 @@
   <tr valign="top">
     <td width="100%">
       <span class="breadcrumbs">
-        Package&nbsp;lib ::
+        <a href="tnef-module.html">Package&nbsp;tnef</a> ::
         Module&nbsp;cmd
       </span>
     </td>
@@ -48,13 +48,13 @@
     onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
         <tr><td align="right"><span class="options"
             >[<a href="frames.html" target="_top">frames</a
-            >]&nbsp;|&nbsp;<a href="lib.cmd-pysrc.html"
+            >]&nbsp;|&nbsp;<a href="tnef.cmd-pysrc.html"
             target="_top">no&nbsp;frames</a>]</span></td></tr>
       </table>
     </td>
   </tr>
 </table>
-<h1 class="epydoc">Source Code for <a href="lib.cmd-module.html">Module lib.cmd</a></h1>
+<h1 class="epydoc">Source Code for <a href="tnef.cmd-module.html">Module tnef.cmd</a></h1>
 <pre class="py-src">
 <a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
 <a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-docstring">This module implements a low-level wrapper to the 'tnef' command. There should</tt> </tt>
@@ -66,7 +66,7 @@
 <a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">subprocess</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Popen</tt><tt class="py-op">,</tt> <tt class="py-name">PIPE</tt> </tt>
 <a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"> </tt>
 <a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-comment"># package</tt> </tt>
-<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-comment"></tt><tt class="py-keyword">import</tt> <tt class="py-name">errors</tt><tt class="py-op">,</tt> <tt class="py-name">util</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-comment"></tt><tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Module tnef.errors=tnef.errors-module.html"><a title="tnef.errors" class="py-name" href="#" onclick="return doclink('link-0', 'errors', 'link-0');">errors</a></tt><tt class="py-op">,</tt> <tt id="link-1" class="py-name" targets="Module tnef.util=tnef.util-module.html"><a title="tnef.util" class="py-name" href="#" onclick="return doclink('link-1', 'util', 'link-1');">util</a></tt> </tt>
 <a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"> </tt>
 <a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-name">__all__</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">"listContents"</tt><tt class="py-op">,</tt> <tt class="py-string">"extractContents"</tt><tt class="py-op">)</tt> </tt>
 <a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
@@ -81,35 +81,37 @@
 <a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-comment"></tt><tt class="py-comment"># if 'mimeinfo' is set, a list of filename:mimetype dictionaries is</tt> </tt>
 <a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-comment"></tt><tt class="py-comment"># returned</tt> </tt>
 <a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
-<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable lib.cmd.logger=lib.cmd-module.html#logger"><a title="lib.cmd.logger" class="py-name" href="#" onclick="return doclink('link-0', 'logger', 'link-0');">logger</a></tt> <tt class="py-op">=</tt> <tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">getLogger</tt><tt class="py-op">(</tt><tt class="py-string">"tnef-command"</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable tnef.cmd.logger=tnef.cmd-module.html#logger,Variable tnef.tnef.logger=tnef.tnef-module.html#logger"><a title="tnef.cmd.logger
+tnef.tnef.logger" class="py-name" href="#" onclick="return doclink('link-2', 'logger', 'link-2');">logger</a></tt> <tt class="py-op">=</tt> <tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">getLogger</tt><tt class="py-op">(</tt><tt class="py-string">"tnef-command"</tt><tt class="py-op">)</tt> </tt>
 <a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"> </tt>
-<a name="listContents"></a><div id="listContents-def"><a name="L28"></a><tt class="py-lineno">28</tt> <a class="py-toggle" href="#" id="listContents-toggle" onclick="return toggle('listContents');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="lib.cmd-module.html#listContents">listContents</a><tt class="py-op">(</tt><tt class="py-param">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="listContents"></a><div id="listContents-def"><a name="L28"></a><tt class="py-lineno">28</tt> <a class="py-toggle" href="#" id="listContents-toggle" onclick="return toggle('listContents');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="tnef.cmd-module.html#listContents">listContents</a><tt class="py-op">(</tt><tt class="py-param">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="listContents-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="listContents-expanded"><a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">   <tt class="py-docstring">"wrapper for using tnef command body/attachment listing functionality"</tt> </tt>
 <a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"> </tt>
 <a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">   <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt class="py-name">update</tt><tt class="py-op">(</tt><tt class="py-op">{</tt><tt class="py-string">"contents"</tt><tt class="py-op">:</tt><tt class="py-name">True</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
 <a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"> </tt>
-<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">   <tt class="py-name">output</tt> <tt class="py-op">=</tt>  <tt id="link-1" class="py-name" targets="Function lib.cmd._tnef()=lib.cmd-module.html#_tnef"><a title="lib.cmd._tnef" class="py-name" href="#" onclick="return doclink('link-1', '_tnef', 'link-1');">_tnef</a></tt><tt class="py-op">(</tt><tt class="py-name">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">   <tt class="py-name">output</tt> <tt class="py-op">=</tt>  <tt id="link-3" class="py-name" targets="Function tnef.cmd._tnef()=tnef.cmd-module.html#_tnef"><a title="tnef.cmd._tnef" class="py-name" href="#" onclick="return doclink('link-3', '_tnef', 'link-3');">_tnef</a></tt><tt class="py-op">(</tt><tt class="py-name">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
 <a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">    </tt>
 <a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">   <tt class="py-keyword">if</tt> <tt class="py-name">output</tt><tt class="py-op">:</tt> </tt>
-<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">      <tt class="py-name">output</tt> <tt class="py-op">=</tt> <tt class="py-name">util</tt><tt class="py-op">.</tt><tt class="py-name">process_tnef_output</tt><tt class="py-op">(</tt><tt class="py-name">output</tt><tt class="py-op">,</tt> <tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">      <tt class="py-name">output</tt> <tt class="py-op">=</tt> <tt id="link-4" class="py-name"><a title="tnef.util" class="py-name" href="#" onclick="return doclink('link-4', 'util', 'link-1');">util</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Function tnef.util.process_tnef_output()=tnef.util-module.html#process_tnef_output"><a title="tnef.util.process_tnef_output" class="py-name" href="#" onclick="return doclink('link-5', 'process_tnef_output', 'link-5');">process_tnef_output</a></tt><tt class="py-op">(</tt><tt class="py-name">output</tt><tt class="py-op">,</tt> <tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
 <a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">   <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
 <a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">      <tt class="py-name">output</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
-<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">   <tt id="link-2" class="py-name"><a title="lib.cmd.logger" class="py-name" href="#" onclick="return doclink('link-2', 'logger', 'link-0');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">"listContents of %s: %s"</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">sourcefile</tt><tt class="py-op">.</tt><tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-string">", "</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">output</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">   <tt id="link-6" class="py-name"><a title="tnef.cmd.logger
+tnef.tnef.logger" class="py-name" href="#" onclick="return doclink('link-6', 'logger', 'link-2');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">"listContents of %s: %s"</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">sourcefile</tt><tt class="py-op">.</tt><tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-string">", "</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">output</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
 <a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">   <tt class="py-keyword">return</tt> <tt class="py-name">output</tt> </tt>
 </div><a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line"> </tt>
 <a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
-<a name="extractContents"></a><div id="extractContents-def"><a name="L43"></a><tt class="py-lineno">43</tt> <a class="py-toggle" href="#" id="extractContents-toggle" onclick="return toggle('extractContents');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="lib.cmd-module.html#extractContents">extractContents</a><tt class="py-op">(</tt><tt class="py-param">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="extractContents"></a><div id="extractContents-def"><a name="L43"></a><tt class="py-lineno">43</tt> <a class="py-toggle" href="#" id="extractContents-toggle" onclick="return toggle('extractContents');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="tnef.cmd-module.html#extractContents">extractContents</a><tt class="py-op">(</tt><tt class="py-param">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="extractContents-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="extractContents-expanded"><a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">   <tt class="py-docstring">"wrapper for using tnef command body/attachment extraction functionality"</tt> </tt>
 <a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"> </tt>
-<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">   <tt id="link-3" class="py-name"><a title="lib.cmd._tnef" class="py-name" href="#" onclick="return doclink('link-3', '_tnef', 'link-1');">_tnef</a></tt><tt class="py-op">(</tt><tt class="py-name">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">   <tt id="link-7" class="py-name"><a title="tnef.cmd._tnef" class="py-name" href="#" onclick="return doclink('link-7', '_tnef', 'link-3');">_tnef</a></tt><tt class="py-op">(</tt><tt class="py-name">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
 </div><a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"> </tt>
 <a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
 <a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line"><tt class="py-comment"># actual command invocation</tt> </tt>
 <a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
-<a name="_tnef"></a><div id="_tnef-def"><a name="L51"></a><tt class="py-lineno">51</tt> <a class="py-toggle" href="#" id="_tnef-toggle" onclick="return toggle('_tnef');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="lib.cmd-module.html#_tnef">_tnef</a><tt class="py-op">(</tt><tt class="py-param">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="_tnef"></a><div id="_tnef-def"><a name="L51"></a><tt class="py-lineno">51</tt> <a class="py-toggle" href="#" id="_tnef-toggle" onclick="return toggle('_tnef');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="tnef.cmd-module.html#_tnef">_tnef</a><tt class="py-op">(</tt><tt class="py-param">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="_tnef-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="_tnef-expanded"><a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">   <tt class="py-docstring">"shell command runner"</tt> </tt>
 <a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line"> </tt>
-<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">   <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt class="py-name">util</tt><tt class="py-op">.</tt><tt class="py-name">process_args</tt><tt class="py-op">(</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">   <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt id="link-8" class="py-name"><a title="tnef.util" class="py-name" href="#" onclick="return doclink('link-8', 'util', 'link-1');">util</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Function tnef.util.process_args()=tnef.util-module.html#process_args"><a title="tnef.util.process_args" class="py-name" href="#" onclick="return doclink('link-9', 'process_args', 'link-9');">process_args</a></tt><tt class="py-op">(</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
 <a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">   <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">"tnef"</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-name">args</tt> </tt>
 <a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">   <tt class="py-name">process</tt> <tt class="py-op">=</tt> <tt class="py-name">Popen</tt><tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-name">stdin</tt><tt class="py-op">=</tt><tt class="py-name">sourcefile</tt><tt class="py-op">,</tt> <tt class="py-name">stdout</tt><tt class="py-op">=</tt><tt class="py-name">PIPE</tt><tt class="py-op">,</tt> <tt class="py-name">stderr</tt><tt class="py-op">=</tt><tt class="py-name">PIPE</tt><tt class="py-op">)</tt> </tt>
 <a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">   <tt class="py-name">out</tt><tt class="py-op">,</tt> <tt class="py-name">err</tt> <tt class="py-op">=</tt> <tt class="py-name">process</tt><tt class="py-op">.</tt><tt class="py-name">communicate</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
@@ -117,7 +119,7 @@
 <a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">    </tt>
 <a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">   <tt class="py-name">problem</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">process</tt><tt class="py-op">.</tt><tt class="py-name">returncode</tt> <tt class="py-op">!=</tt> <tt class="py-number">1</tt> <tt class="py-keyword">and</tt> <tt class="py-name">process</tt><tt class="py-op">.</tt><tt class="py-name">returncode</tt><tt class="py-op">)</tt> <tt class="py-keyword">or</tt> <tt class="py-name">err</tt> </tt>
 <a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">   <tt class="py-keyword">if</tt> <tt class="py-name">problem</tt><tt class="py-op">:</tt> </tt>
-<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">      <tt class="py-keyword">raise</tt> <tt class="py-name">errors</tt><tt class="py-op">.</tt><tt class="py-name">TNEFRunnerError</tt><tt class="py-op">(</tt><tt class="py-string">"command failed: %s"</tt> <tt class="py-op">%</tt> <tt class="py-name">problem</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">      <tt class="py-keyword">raise</tt> <tt id="link-10" class="py-name"><a title="tnef.errors" class="py-name" href="#" onclick="return doclink('link-10', 'errors', 'link-0');">errors</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Class tnef.errors.TNEFRunnerError=tnef.errors.TNEFRunnerError-class.html"><a title="tnef.errors.TNEFRunnerError" class="py-name" href="#" onclick="return doclink('link-11', 'TNEFRunnerError', 'link-11');">TNEFRunnerError</a></tt><tt class="py-op">(</tt><tt class="py-string">"command failed: %s"</tt> <tt class="py-op">%</tt> <tt class="py-name">problem</tt><tt class="py-op">)</tt> </tt>
 <a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"> </tt>
 <a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">   <tt class="py-keyword">return</tt> <tt class="py-name">out</tt> </tt>
 </div><a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line"> </tt><script type="text/javascript">
@@ -132,8 +134,8 @@ expandto(location.href);
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
   <!-- Home link -->
-      <th bgcolor="#70b0f0" class="navbar-select"
-          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="tnef-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -153,7 +155,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri May 23 18:28:06 2008
+    Generated by Epydoc 3.0.1 on Fri May 23 19:11:48 2008
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
