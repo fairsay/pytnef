@@ -1,0 +1,10 @@
+lib.tnef	lib.tnef-module.html
+lib.tnef.getFiles	lib.tnef-module.html#getFiles
+lib.tnef.getBodyFromString	lib.tnef-module.html#getBodyFromString
+lib.tnef.listFiles	lib.tnef-module.html#listFiles
+lib.tnef.logger	lib.tnef-module.html#logger
+lib.tnef.hasBody	lib.tnef-module.html#hasBody
+lib.tnef.hasFiles	lib.tnef-module.html#hasFiles
+lib.tnef.listBodies	lib.tnef-module.html#listBodies
+lib.tnef.TNEFBODYTYPES	lib.tnef-module.html#TNEFBODYTYPES
+lib.tnef.getBody	lib.tnef-module.html#getBody
