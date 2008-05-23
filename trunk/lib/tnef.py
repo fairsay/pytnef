@@ -6,7 +6,6 @@ TNEF body/bodies and embedded files.
 @group content checking: has*
 @group content retrieval: get*
 @group content listing: list*
-@group utilities: listBodyTypes, getInfo
 """
 
 from __future__ import with_statement
