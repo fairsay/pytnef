@@ -1,7 +1,8 @@
 """
 The namespace package imports the higher-level API to TNEF decoding
 
-@group content listing: tnef.list*, cmd.extract*
+@group tnef contents listing: list*
+@group tnef contents retrieval: get*
 """
 
 from tnef import *
