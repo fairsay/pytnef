@@ -8,3 +8,6 @@ class TNEFRunnerError(Exception):
 
 class TNEFProcessingException(Exception):
    "no body of the requested type, whatever etc."
+
+class TNEFProcessingError(Exception):
+   "could not successfully process TNEF"
